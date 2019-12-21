@@ -145,7 +145,7 @@ endfunction
 " this function actually updates the context and calls itself until it stabilizes
 function! s:update_context(allow_resize, force_resize) abort
     let winid = win_getid()
-    let current_line = line('w0')
+    let current_line = line('.')
 
     call s:echof('> update_context', a:allow_resize, a:force_resize, winid, current_line)
 

@@ -145,6 +145,7 @@ endfunction
 " this function actually updates the context and calls itself until it stabilizes
 function! s:update_context(allow_resize, force_resize) abort
     let winid = win_getid()
+    let top_line = line('w0')
     let current_line = line('.')
 
     call s:echof('> update_context', a:allow_resize, a:force_resize, winid, current_line)
@@ -182,9 +183,9 @@ function! s:update_context(allow_resize, force_resize) abort
     let s:last_winid = winid
     let w:last_top_line = current_line
 
-    let s:hidden_line = s:get_hidden_line(current_line)
+    let s:hidden_line = s:get_hidden_line(top_line)
     let base_line = s:get_base_line(current_line)
-    let [context, context_len] = s:get_context(base_line)
+    let [context, context_len] = s:get_context(base_line, top_line)
 
     " limit context per indent
     let diff_want = context_len - w:min_height
@@ -256,7 +257,7 @@ function! s:get_base_line(top_line) abort
 endfunction
 
 " collect all context lines
-function! s:get_context(line) abort
+function! s:get_context(line, top_line) abort
     let base_line = a:line
     if base_line.number == 0
         return [{}, 0]
@@ -277,13 +278,15 @@ function! s:get_context(line) abort
             return [context, context_len]
         endif
 
-        let indent = context_line.indent
-        if !has_key(context, indent)
-            let context[indent] = []
-        endif
+        if context_line.number < a:top_line
+            let indent = context_line.indent
+            if !has_key(context, indent)
+                let context[indent] = []
+            endif
 
-        call insert(context[indent], context_line, 0)
-        let context_len += 1
+            call insert(context[indent], context_line, 0)
+            let context_len += 1
+        endif
 
         if s:hidden_line.number == context_line.number
             " don't show ellipsis if hidden line is part of context

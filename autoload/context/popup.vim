@@ -193,10 +193,6 @@ function! s:show() abort
     endif
 
     call context#popup#redraw(winid, 1)
-
-    if g:context.presenter == 'nvim-float'
-        call context#popup#nvim#redraw_screen()
-    endif
 endfunction
 
 function! s:open() abort

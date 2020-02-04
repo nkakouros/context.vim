@@ -173,6 +173,8 @@ function! s:show() abort
         call remove(s:popups, winid)
     endif
 
+    call setwinvar(winid, '&scrolloff', len(w:context.lines_top))
+
     if len(w:context.lines_top) == 0
         call context#util#echof('  no lines')
 

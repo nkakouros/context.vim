@@ -1,6 +1,8 @@
 let s:activated     = 0
 let s:ignore_update = 0
 
+" TODO: actually make a temp setting for this so we can merge this branch
+
 " call this on VimEnter to activate the plugin
 function! context#activate() abort
     " for some reason there seems to be a race when we try to show context of
